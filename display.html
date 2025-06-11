@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display</title>
+    <link rel="stylesheet" href="./assets/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        window.Swal = Swal
+    </script>
+
+</head>
+
+<body>
+
+    <div class="display-page">
+        <div class="container-table">
+            <div class="header-table">
+                <div>
+                    QR CODE
+                </div>
+                <div>
+                    CODE
+                </div>
+                <div>
+                    Part NO.
+                </div>
+                <div>
+                    Coil/Box
+                </div>
+                <div>
+                    Name
+                </div>
+                <div>
+                    Rack
+                </div>
+                <div>
+                    Item In Rack
+                </div>
+            </div>
+            <div id="content-table">
+
+            </div>
+        </div>
+    </div>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCMUJmWrf9FguB6dMLuovZRFQ_PV0HrwRM",
+            authDomain: "crud-ben.firebaseapp.com",
+            projectId: "crud-ben",
+            storageBucket: "crud-ben.appspot.com", // fixed typo (should end with .appspot.com)
+            databaseURL: "https://crud-ben-default-rtdb.asia-southeast1.firebasedatabase.app", // correct key name
+            messagingSenderId: "493204010941",
+            appId: "1:493204010941:web:e3daa4231b128991eac4d4",
+            measurementId: "G-V82BNXW5QE"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        onValue(ref(database, '/data'), (snapshot) => {
+            console.log(snapshot.val())
+            let textElement = ''
+
+            Object.values(snapshot.val()).forEach(item=>{
+                textElement += `
+                <div>
+                    <div style="padding-left: 30px">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=scan.html?code=${item['code']}" />
+                    </div>
+                    <div>
+                        ${item['code']}
+                    </div>
+                    <div>
+                        ${item['coil_box']}
+                    </div>
+                    <div>
+                        ${item['item_in_rack']}
+                    </div>
+                    <div>
+                        ${item['name']}
+                    </div>
+                    <div>
+                        ${item['rack']}
+                    </div>
+                    <div>
+                        ${item['part_no']}
+                    </div>
+                </div>
+                `
+            })
+
+            document.getElementById('content-table').innerHTML = textElement
+        })
+    </script>
+</body>
+
+</html>
